@@ -1,40 +1,53 @@
+const mongoose = require('mongoose');
+const createError = require('../routes/api/createError');
 
-const fs = require('fs/promises');
-const path = require('path');
-const contactsPath = path.join(__dirname, 'contacts.json');
+  const schema = new mongoose.Schema(
+  
+  {
+    name: {
+      type: String,
+      required: [true, 'Set name for contact'],
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+  }
+  );
+const Contacts = mongoose.model('contact', schema);
 
-const listContacts = async () => {
-    const list = await fs.readFile(contactsPath, 'utf8');
-    return JSON.parse(list);
-    
-}
+const listContacts = async () => await Contacts.find({});
 
-const getContactById = async (contactId) => {
-  const list = await listContacts();
-  return list.find(({id})=>id === contactId);
-}
+const getContactById = async (contactId) => await Contacts.find({_id: contactId})
 
-const removeContact = async (contactId) => {
-  const list = await listContacts();
-  const removeItem = await getContactById(contactId);
-  const filterList = list.filter(({id})=>id !== contactId)
-  await fs.writeFile(contactsPath, JSON.stringify(filterList, null, 2));
-  return removeItem;
-}
+const removeContact = async (contactId) => await Contacts.findByIdAndDelete({_id: contactId});
 
-const addContact = async (body) => {
-  const list = await listContacts();
-  list.push(body);
-  await fs.writeFile(contactsPath, JSON.stringify(list, null, 2));
-  return body;
-}
+const addContact = async (body) => await Contacts.create(body); 
 
 const updateContact = async (contactId, body) => {
-  const item = await getContactById(contactId);
-  const newItem = {...item, ...body};
-  await removeContact(contactId);
-  await addContact(newItem);
-  return newItem;
+  try{
+    const result = await Contacts.findByIdAndUpdate(contactId, body);
+    return result;
+  }catch(err){
+    throw createError('NOT_FOUND', err.message);
+  }
+}
+
+const updateStatusContact = async (contactId, body) => { 
+  try{
+    const result = await Contacts.findByIdAndUpdate(contactId, body);
+    return result;
+  }catch(err){
+    throw createError('NOT_FOUND', err.message);
+  }
+  
+  
 }
 
 module.exports = {
@@ -43,4 +56,5 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact
 }

@@ -1,7 +1,6 @@
 const express = require('express');
 const getTool = require('../../models/contacts');
 const router = express.Router();
-const { nanoid } = require('nanoid');
 const validateBody = require('../../middlewares/validateBody');
 const schemaBody = require('../../middlewares/schemaBody');
 const createError = require('./createError');
@@ -9,6 +8,7 @@ const validateParams = require('../../middlewares/validateParams');
 const schemaParams = require('../../middlewares/schemaParams');
 const validateBodyUpd = require('../../middlewares/validateBodyUpd');
 const schemaBodyUpd = require('../../middlewares/schemaBodyUpd');
+
 router.get('/', async (req, res, next) => {
   try{
     const data = await getTool.listContacts()
@@ -29,17 +29,16 @@ router.get('/', async (req, res, next) => {
 router.get('/:contactId', async (req, res, next) => {
 
   try{
-    const data = await getTool.getContactById(req.params.contactId)
+    const data = await getTool.getContactById(req.params.contactId);
     if(data){
       res.status(200).json({ 
         status: 'Success',
         code: 200,
         data,
         });
-    }else next(createError('NOT_FOUND','Not found by id'));
-        
+    }
   } catch(err){
-    next(createError('INTERNAL_SERVER_ERROR',err));
+    next(createError('NOT_FOUND',err));
   }
 
 })
@@ -47,7 +46,7 @@ router.get('/:contactId', async (req, res, next) => {
 router.post('/', validateBody(schemaBody), async (req, res, next) => {
 
   try{
-    const data = await getTool.addContact({id: nanoid(), ...req.body});
+    const data = await getTool.addContact(req.body);
     if (data){
         res.status(201).json({ 
         status: 'Created',
@@ -92,9 +91,31 @@ router.put('/:contactId', [validateParams(schemaParams), validateBodyUpd(schemaB
         data,
       })
       
-    }else next(createError('INTERNAL_SERVER_ERROR'));
+    }
   } catch(err){
-    next(createError('INTERNAL_SERVER_ERROR', err));
+    next(err);
+  }
+  
+})
+
+router.patch('/:contactId/favorite', async (req, res, next) => {
+  if(!Object.keys(req.body).length){
+    next(createError('BAD_REQUEST', 'missing field favorite'));
+    return;
+  }
+  try{
+    const data = await getTool.updateStatusContact(req.params.contactId, req.body);
+    if (data){
+        res.status(200).json({ 
+        message: 'contact updated',
+        status: 'Update',
+        code: 200,
+        data,
+      })
+      
+    }
+  } catch(err){
+    next(err);
   }
   
 })
