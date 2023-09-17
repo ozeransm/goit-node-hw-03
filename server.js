@@ -2,7 +2,6 @@ const app = require('./app')
 const mongoose = require('mongoose');
 const {DB_HOST} = process.env;
 
-'mongodb+srv://ozeransm:6fwhELb2OOrT9JcA@cluster0.1f1qt4u.mongodb.net/db-contacts'
 mongoose.connect(DB_HOST)
   .then(() => {
     console.log('Database connection successful');

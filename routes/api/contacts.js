@@ -1,5 +1,5 @@
 const express = require('express');
-const getTool = require('../../models/contacts');
+const Contacts = require('../../models/contacts');
 const router = express.Router();
 const validateBody = require('../../middlewares/validateBody');
 const schemaBody = require('../../middlewares/schemaBody');
@@ -8,10 +8,12 @@ const validateParams = require('../../middlewares/validateParams');
 const schemaParams = require('../../middlewares/schemaParams');
 const validateBodyUpd = require('../../middlewares/validateBodyUpd');
 const schemaBodyUpd = require('../../middlewares/schemaBodyUpd');
+const validateEmptyBody = require('../../middlewares/validateEmptyBody');
+const schemaEmptyBody = require('../../middlewares/schemaEmptyBody');
 
 router.get('/', async (req, res, next) => {
   try{
-    const data = await getTool.listContacts()
+    const data = await Contacts.find({});
     if (data){
       res.status(200).json({ 
       status: 'Success',
@@ -29,7 +31,7 @@ router.get('/', async (req, res, next) => {
 router.get('/:contactId', async (req, res, next) => {
 
   try{
-    const data = await getTool.getContactById(req.params.contactId);
+    const data = await Contacts.find({_id: req.params.contactId})
     if(data){
       res.status(200).json({ 
         status: 'Success',
@@ -46,7 +48,7 @@ router.get('/:contactId', async (req, res, next) => {
 router.post('/', validateBody(schemaBody), async (req, res, next) => {
 
   try{
-    const data = await getTool.addContact(req.body);
+    const data = await Contacts.create(req.body);
     if (data){
         res.status(201).json({ 
         status: 'Created',
@@ -64,7 +66,7 @@ router.post('/', validateBody(schemaBody), async (req, res, next) => {
 router.delete('/:contactId', async (req, res, next) => {
 
   try{
-    const data = await getTool.removeContact(req.params.contactId);
+    const data = await Contacts.findByIdAndDelete({_id: req.params.contactId});
     if (data){
         res.status(200).json({ 
         message: 'contact deleted',
@@ -82,7 +84,7 @@ router.delete('/:contactId', async (req, res, next) => {
 
 router.put('/:contactId', [validateParams(schemaParams), validateBodyUpd(schemaBodyUpd)], async (req, res, next) => {
   try{
-    const data = await getTool.updateContact(req.params.contactId, req.body);
+    const data = await Contacts.findByIdAndUpdate(req.params.contactId, req.body);
     if (data){
         res.status(200).json({ 
         message: 'contact updated',
@@ -93,18 +95,14 @@ router.put('/:contactId', [validateParams(schemaParams), validateBodyUpd(schemaB
       
     }
   } catch(err){
-    next(err);
+    next(createError('NOT_FOUND', err.message));
   }
   
 })
 
-router.patch('/:contactId/favorite', async (req, res, next) => {
-  if(!Object.keys(req.body).length){
-    next(createError('BAD_REQUEST', 'missing field favorite'));
-    return;
-  }
+router.patch('/:contactId/favorite', validateEmptyBody(schemaEmptyBody, 'missing field favorite'), async (req, res, next) => {
   try{
-    const data = await getTool.updateStatusContact(req.params.contactId, req.body);
+    const data = await Contacts.findByIdAndUpdate(req.params.contactId, req.body);
     if (data){
         res.status(200).json({ 
         message: 'contact updated',
@@ -115,7 +113,7 @@ router.patch('/:contactId/favorite', async (req, res, next) => {
       
     }
   } catch(err){
-    next(err);
+    next(createError('NOT_FOUND', err.message));
   }
   
 })
