@@ -6,9 +6,7 @@ const schemaBody = require('../../middlewares/schemaBody');
 const createError = require('./createError');
 const validateParams = require('../../middlewares/validateParams');
 const schemaParams = require('../../middlewares/schemaParams');
-const validateBodyUpd = require('../../middlewares/validateBodyUpd');
 const schemaBodyUpd = require('../../middlewares/schemaBodyUpd');
-const validateEmptyBody = require('../../middlewares/validateEmptyBody');
 const schemaEmptyBody = require('../../middlewares/schemaEmptyBody');
 
 router.get('/', async (req, res, next) => {
@@ -82,7 +80,7 @@ router.delete('/:contactId', async (req, res, next) => {
 
 })
 
-router.put('/:contactId', [validateParams(schemaParams), validateBodyUpd(schemaBodyUpd)], async (req, res, next) => {
+router.put('/:contactId', [validateParams(schemaParams), validateBody(schemaBodyUpd)], async (req, res, next) => {
   try{
     const data = await Contacts.findByIdAndUpdate(req.params.contactId, req.body);
     if (data){
@@ -100,7 +98,7 @@ router.put('/:contactId', [validateParams(schemaParams), validateBodyUpd(schemaB
   
 })
 
-router.patch('/:contactId/favorite', validateEmptyBody(schemaEmptyBody, 'missing field favorite'), async (req, res, next) => {
+router.patch('/:contactId/favorite', validateBody(schemaEmptyBody, 'missing field favorite'), async (req, res, next) => {
   try{
     const data = await Contacts.findByIdAndUpdate(req.params.contactId, req.body);
     if (data){

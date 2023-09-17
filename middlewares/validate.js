@@ -1,7 +1,7 @@
 const createError = require("../routes/api/createError");
 const validate = (target)=>(schema, mess='')=>(req, res, next) => {
-    
-    const data = (target === 'body' || target === 'update') ? req.body 
+    const data = target === 'body' 
+            ? req.body 
             : {contactId: req.params.contactId}; 
     const result = schema.validate(data);
     if (result.error){
