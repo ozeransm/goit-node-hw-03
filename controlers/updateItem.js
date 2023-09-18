@@ -1,5 +1,5 @@
-const Contacts = require("../../models/contacts");
-const createError = require("./createError");
+const Contacts = require("../models/contacts");
+const createError = require("../helpers/createError");
 
 const updateItem = async (req, res, next) => {
     try{

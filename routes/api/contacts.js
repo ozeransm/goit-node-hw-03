@@ -6,12 +6,12 @@ const validateParams = require('../../middlewares/validateParams');
 const schemaParams = require('../../middlewares/schemaParams');
 const schemaBodyUpd = require('../../middlewares/schemaBodyUpd');
 const schemaEmptyBody = require('../../middlewares/schemaEmptyBody');
-const getAll = require('./getAll');
-const getById = require('./getById');
-const addItem = require('./addItem');
-const removeItem = require('./removeItem');
-const updateItem = require('./updateItem');
-const updateOneFileldItem = require('./updateOneFileldItem');
+const getAll = require('../../controlers/getAll');
+const getById = require('../../controlers/getById');
+const addItem = require('../../controlers/addItem');
+const removeItem = require('../../controlers/removeItem');
+const updateItem = require('../../controlers/updateItem');
+const updateOneFileldItem = require('../../controlers/updateOneFileldItem');
 
 router.get('/', getAll);
 

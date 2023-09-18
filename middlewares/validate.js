@@ -1,4 +1,4 @@
-const createError = require("../routes/api/createError");
+const createError = require("../helpers/createError");
 const validate = (target)=>(schema, mess='')=>(req, res, next) => {
     const data = target === 'body' 
             ? req.body 
