@@ -4,7 +4,8 @@ const createError = require("../helpers/createError");
 const getAll = async (req, res, next) => {
     try{
         const data = await Contacts.find({});
-        if (data){
+        console.log(data)
+        if (data.length !== 0){
           res.status(200).json({ 
           status: 'Success',
           code: 200,
