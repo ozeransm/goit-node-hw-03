@@ -3,7 +3,7 @@ const createError = require("../helpers/createError");
 
 const getById = async (req, res, next) => {
     try{
-        const data = await Contacts.find({_id: req.params.contactId})
+        const data = await Contacts.find({_id: req.params.contactId, owner: req.user})
         if(data.length !== 0){
           res.status(200).json({ 
             status: 'Success',

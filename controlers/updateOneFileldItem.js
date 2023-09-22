@@ -4,7 +4,7 @@ const createError = require("../helpers/createError");
 const updateOneFileldItem = async (req, res, next) => {
     try{
         const data = await Contacts.findByIdAndUpdate(req.params.contactId, req.body);
-        if (data.length !== 0){
+        if (data){
             res.status(200).json({ 
             message: 'contact updated',
             status: 'Update',
