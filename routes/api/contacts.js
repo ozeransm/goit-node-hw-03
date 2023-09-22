@@ -42,7 +42,7 @@ router.delete('/:contactId', removeItem);
 
 router.put('/:contactId', [validateParams(schemaParams), validateBody(schemaBodyUpd)], updateItem);
 
-router.patch('/:contactId/favorite', validateBody(schemaEmptyBody, 'missing field favorite'), updateOneFileldItem);
+router.get('/:contactId/favorite', validateBody(schemaEmptyBody, 'missing field favorite'), updateOneFileldItem);
 
 router.patch('/users', validateBody(schemaEmptyBodySub, 'missing field subscription'), auth, updateSubscription);
 
