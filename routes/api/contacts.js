@@ -12,17 +12,24 @@ const addItem = require('../../controlers/addItem');
 const removeItem = require('../../controlers/removeItem');
 const updateItem = require('../../controlers/updateItem');
 const updateOneFileldItem = require('../../controlers/updateOneFileldItem');
+const auth = require('../../middlewares/auth');
+const schemaRegister = require('../../middlewares/schemaRegister');
+const schemaLogin = require('../../middlewares/schemaLogin')
+const updateSubscription = require('../../auth/user/updateSubscription');
+const schemaEmptyBodySub = require('../../middlewares/chemaEmptyBodySub');
 
-router.get('/', getAll);
+router.get('/', auth, getAll);
 
-router.get('/:contactId', getById);
+router.get('/:contactId', auth, getById);
 
-router.post('/', validateBody(schemaBody), addItem);
+router.post('/', [validateBody(schemaBody), auth], addItem);
 
 router.delete('/:contactId', removeItem);
 
 router.put('/:contactId', [validateParams(schemaParams), validateBody(schemaBodyUpd)], updateItem);
 
-router.patch('/:contactId/favorite', validateBody(schemaEmptyBody, 'missing field favorite'), updateOneFileldItem);
+router.get('/:contactId/favorite', validateBody(schemaEmptyBody, 'missing field favorite'), updateOneFileldItem);
+
+router.patch('/users', validateBody(schemaEmptyBodySub, 'missing field subscription'), auth, updateSubscription);
 
 module.exports = router;
