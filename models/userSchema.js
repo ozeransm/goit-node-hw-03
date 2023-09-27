@@ -15,7 +15,8 @@ const usersSchema = new mongoose.Schema({
         enum: ["starter", "pro", "business"],
         default: "starter"
       },
-      token: String
+      token: String,
+      avatarURL: String,
       
 },{versionKey: false, timestamps: true});
 
