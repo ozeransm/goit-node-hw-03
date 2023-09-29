@@ -7,17 +7,19 @@ const singin = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await Users.findOne({email});
     const result = await bcrypt.compare(password, user.password);
-    console.log(result);
     if (result)
-    if (!user.token){
+    if (!user.token)
+    {
         const token = jwt.sign({_id: user._id}, SEKRET_KEY, { expiresIn: '1d' });
         const updateUser = await Users.findByIdAndUpdate(user._id, { token });
-        res.status(200).json({
+        res.status(200);
+        res.json({
             message: "login success",
             token
         })
     }else{
-        res.status(200).json({
+        res.status(200);
+        res.json({
             message: "login success",
             token: user.token,
             user:{
