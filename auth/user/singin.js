@@ -20,7 +20,6 @@ const singin = async (req, res, next) => {
     }else{
         res.status(200);
         res.json({
-            message: "login success",
             token: user.token,
             user:{
                 email: user.email,
@@ -30,8 +29,7 @@ const singin = async (req, res, next) => {
     }else {
         next(createError('UNAUTHORIZED', 'Email or password is wrong'));
     }
-
+    
     }
     
-
 module.exports = singin;
