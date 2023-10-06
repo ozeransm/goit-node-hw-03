@@ -22,11 +22,11 @@ const usersSchema = new mongoose.Schema({
         type: Boolean,
         default: false
       },
-      verifyCode: {
+      verificationToken: {
         type: String,
-        default: '',
-
-      }
+        required: [true, 'Verify token is required'],
+        
+      },
 
       
 },{versionKey: false, timestamps: true});
