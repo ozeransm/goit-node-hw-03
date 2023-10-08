@@ -3,17 +3,20 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const createError = require('../../helpers/createError');
 const gravatar = require('gravatar');
-
+const sendEmail = require('../../helpers/sendEmail');
+const {nanoid} = require('nanoid');
 const {SEKRET_KEY} = process.env;
 const singup  = async (req, res, next) => {
     const { email, password: pass } = req.body;
     const hashPassword = await bcrypt.hash(pass, 10);
     const avatarURL = gravatar.url(email);
+    const verificationToken = nanoid();
+    sendEmail(email, verificationToken);
     try{
-        const user = await  Users.create(req.body);
+        const user = await  Users.create({...req.body, verificationToken});
         const {_id} = user;
         const token = jwt.sign({_id}, SEKRET_KEY, { expiresIn: '1d' });
-        const updateUser = await Users.findByIdAndUpdate(_id, {...req.body, password: hashPassword, token, avatarURL });
+        const updateUser = await Users.findByIdAndUpdate(_id, {...req.body, password: hashPassword, token, avatarURL});
         res.status(201);
         res.json({
             message: "User created",

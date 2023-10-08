@@ -5,12 +5,13 @@ const getAll = async (req, res, next) => {
   const {page=1, limit=10, favorite} = req.query;
    try{
         if(favorite!==undefined){
-         
+          
         const data = await Contacts.find({owner: req.user})
                             .where('favorite').equals(favorite)
                             .select('-owner')
                             .limit(limit)
                             .skip(limit*(page-1));
+                            
         if (data.length !== 0){
           res.status(200).json({ 
           status: 'Success',
@@ -27,6 +28,7 @@ const getAll = async (req, res, next) => {
                             .select('-owner')
                             .limit(limit)
                             .skip(limit*(page-1));
+                            
         if (data.length !== 0){
           res.status(200).json({ 
           status: 'Success',
